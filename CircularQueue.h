@@ -39,7 +39,7 @@ public:
 	/*
 	* Метод, выполняющий ввод нового элемента в очередь
 	*/
-	T push(T item) const {
+	T push(T item) {
 		if (!isFull()) {
 			if (m_head == -1) m_head = 0;
 
@@ -55,7 +55,7 @@ public:
 	/*
 	* Метод получения элемента из очереди
 	*/
-	T pop() const {
+	T pop() {
 		T tmp;
 
 		if (!isEmpty()) {
@@ -129,7 +129,7 @@ public:
 	* Метод проверки заполнения очереди. True если пусто
 	*/
 	bool isEmpty() const {
-		return m_head == m_tail;
+		return (m_head == m_tail) && (m_head == -1 && m_tail == -1);
 	}
 
 private:
