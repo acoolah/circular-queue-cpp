@@ -4,87 +4,99 @@
 
 template <typename T>
 class CircularQueue {
-private:
-	std::vector<T> _container;
-	int _head = -1;
-	int _tail = -1;
-	T _trash = NULL;
-
-protected:
-	bool IsFull() {
-		return (_head == _tail + 1) || (_head == 0 && _tail == _container.size() - 1);
-	}
-
-	bool IsEmpty() {
-		return _head == _tail;
-	}
-
 public:
-	CircularQueue(int bufferSize = 10, T trashValue = NULL) {
+	/*
+	* Конструктор класса
+	* @param {int} bufferSize - максимальный размер буфера (размера) очереди.
+	* Выделяет память под определенное количество элементов. Не может быть изменено после создания экземпляра класса
+	* @param {T} trashValue - значение, используемое в качетсве пустоты. Не может быть изменено после создания экземпляра класса
+	*/
+	CircularQueue(int bufferSize, T trashValue) {
 		if (bufferSize > 0) {
-			_trash = trashValue;
-			_container = std::vector<T>(bufferSize, _trash);
+			m_trash = trashValue;
+			m_container = std::vector<T>(bufferSize, m_trash);
 		}
 		else {
 			throw(std::invalid_argument("Invalid buffer size."));
 		}
 	}
 
-	std::vector<T> GetQueueValues() {
-		std::vector<T>_queue(_container);
+	/*
+	* Метод получения копии значений элементов очереди
+	*/
+	std::vector<T> getQueueValues() const {
+		std::vector<T>_queue(m_container);
 		return _queue;
 	}
 
-	T GetTrashValue() const {
-		return _trash;
+	/*
+	* Метод получения значения, установленного в качестве пустоты
+	*/
+	T getTrashValue() const {
+		return m_trash;
 	}
 
-	T Push(T item) {
-		if (!IsFull()) {
-			if (_head == -1) _head = 0;
+	/*
+	* Метод, выполняющий ввод нового элемента в очередь
+	*/
+	T push(T item) const {
+		if (!isFull()) {
+			if (m_head == -1) m_head = 0;
 
-			_tail = (_tail + 1) % _container.size();
-			_container[_tail] = item;
+			m_tail = (m_tail + 1) % m_container.size();
+			m_container[m_tail] = item;
 
 			return item;
 		}
 
-		return _trash;
+		return m_trash;
 	}
 
-	T Pop() {
-		T _buffer;
+	/*
+	* Метод получения элемента из очереди
+	*/
+	T pop() const {
+		T tmp;
 
-		if (!IsEmpty()) {
-			_buffer = _container[_head];
-			_container[_head] = _trash;
+		if (!isEmpty()) {
+			tmp = m_container[m_head];
+			m_container[m_head] = m_trash;
 
-			if (_head == _tail) {
-				_head = -1;
-				_tail = -1;
+			if (m_head == m_tail) {
+				m_head = -1;
+				m_tail = -1;
 			}
 			else {
-				_head = (_head + 1) % _container.size();
+				m_head = (m_head + 1) % m_container.size();
 			}
 
-			return _buffer;
+			return tmp;
 		}
 
-		return _trash;
+		return m_trash;
 	}
 
-	void ClearQueue() {
-		std::fill(_container.begin(), _container.end(), _trash);
+	/*
+	* Метод очищения очереди. Заполняет очередь значением пустоты
+	*/
+	void clearQueue() {
+		std::fill(m_container.begin(), m_container.end(), m_trash);
 	}
 
-	int Capacity() {
-		return _container.size();
+	/*
+	* Метод получения максимального количества элементов очереди
+	*/
+	int capacity() const {
+		return m_container.size();
 	}
 
-	int CountOfNotEmpty() {
+	/*
+	* Метод получения количества задействованных элементов
+	*/
+	int countOfNotEmpty() const {
 		std::vector<std::vector<T>::const_iterator> _matches;
-		for (auto i = _container.begin(); i != _container.end(); ++i) {
-			if (*i != _trash) {
+		for (auto i = m_container.begin(); i != m_container.end(); ++i) {
+			if (*i != m_trash) {
 				_matches.push_back(i);
 			}
 		}
@@ -92,11 +104,37 @@ public:
 		return _matches.size();
 	}
 
-	T Next() const {
-		return _container[_head];
+	/*
+	* Метод получения значения первого элемента
+	*/
+	T getFrontValue() const {
+		return m_container[m_head];
 	}
 
-	T Last() const {
-		return _container[_tail];
+	/*
+	* Метод получения значения последнего элемента
+	*/
+	T getBackValue() const {
+		return m_container[m_tail];
 	}
+
+	/*
+	* Метод проверки заполнения очереди. True если заполнено
+	*/
+	bool isFull() const {
+		return (m_head == m_tail + 1) || (m_head == 0 && m_tail == m_container.size() - 1);
+	}
+
+	/*
+	* Метод проверки заполнения очереди. True если пусто
+	*/
+	bool isEmpty() const {
+		return m_head == m_tail;
+	}
+
+private:
+	std::vector<T> m_container;
+	int m_head = -1;
+	int m_tail = -1;
+	T m_trash;
 };
