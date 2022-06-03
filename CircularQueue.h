@@ -24,9 +24,11 @@ public:
 	/*
 	* Метод получения копии значений элементов очереди
 	*/
-	std::vector<T> getQueueValues() const {
-		std::vector<T>_queue(m_container);
-		return _queue;
+	void printValues() const {
+		std::vector<T>::const_iterator iter = m_container.cbegin();
+		for (iter; iter != m_container.cend(); ++iter) {
+			sdt::cout << *iter << std::endl;
+		}
 	}
 
 	/*
@@ -39,8 +41,8 @@ public:
 	/*
 	* Метод, выполняющий ввод нового элемента в очередь
 	*/
-	T push(T item) {
-		if (!isFull()) {
+	T pushBack(T item) {
+		if (!full()) {
 			if (m_head == -1) m_head = 0;
 
 			m_tail = (m_tail + 1) % m_container.size();
@@ -55,10 +57,10 @@ public:
 	/*
 	* Метод получения элемента из очереди
 	*/
-	T pop() {
+	T take() {
 		T tmp;
 
-		if (!isEmpty()) {
+		if (!empty()) {
 			tmp = m_container[m_head];
 			m_container[m_head] = m_trash;
 
@@ -79,21 +81,21 @@ public:
 	/*
 	* Метод очищения очереди. Заполняет очередь значением пустоты
 	*/
-	void clearQueue() {
+	void clear() {
 		std::fill(m_container.begin(), m_container.end(), m_trash);
 	}
 
 	/*
 	* Метод получения максимального количества элементов очереди
 	*/
-	int capacity() const {
+	int size() const {
 		return m_container.size();
 	}
 
 	/*
 	* Метод получения количества задействованных элементов
 	*/
-	int countOfNotEmpty() const {
+	int capacity() const {
 		std::vector<std::vector<T>::const_iterator> _matches;
 		for (auto i = m_container.begin(); i != m_container.end(); ++i) {
 			if (*i != m_trash) {
@@ -107,14 +109,14 @@ public:
 	/*
 	* Метод проверки заполнения очереди. True если заполнено
 	*/
-	bool isFull() const {
+	bool full() const {
 		return (m_head == m_tail + 1) || (m_head == 0 && m_tail == m_container.size() - 1);
 	}
 
 	/*
 	* Метод проверки заполнения очереди. True если пусто
 	*/
-	bool isEmpty() const {
+	bool empty() const {
 		return (m_head == m_tail) && (m_head == -1 && m_tail == -1);
 	}
 
